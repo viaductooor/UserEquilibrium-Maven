@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.opencsv.CSVWriter;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.jgrapht.Graph;
 
 /**
@@ -27,8 +28,7 @@ public class CsvGraphWriter {
      * @param edgeType Type of edge, should be the same with E
      * @param url      the local file directory to write the graph
      */
-    public static <V, E> void writeTo(Graph<V, E> graph, Class<? extends E> edgeType, String filename) {
-        File file = FileDirectoryGenerator.createDefaultFile(filename);
+    public static <V, E> void writeTo(Graph<V, E> graph, Class<? extends E> edgeType, File file) {
 
         CSVWriter writer = null;
         try {
@@ -40,17 +40,21 @@ public class CsvGraphWriter {
         HashMap<String, Integer> keymap = null;
         for (E edge : graph.edgeSet()) {
             Field[] originalFields = edgeType.getDeclaredFields();
+            if(edgeType.getSuperclass()!=null){
+                Field[] superFields = edgeType.getSuperclass().getDeclaredFields();
+                originalFields = ArrayUtils.addAll(originalFields, superFields);
+            }
             ArrayList<Field> fields = new ArrayList<>();
-            for(Field f:originalFields){
+            for (Field f : originalFields) {
                 if (!f.isAccessible()) {
                     f.setAccessible(true);
                 }
                 Ignore ignore = f.getDeclaredAnnotation(Ignore.class);
-                if(ignore==null){
+                if (ignore == null) {
                     fields.add(f);
                 }
             }
-            
+
             /**
              * write header
              */

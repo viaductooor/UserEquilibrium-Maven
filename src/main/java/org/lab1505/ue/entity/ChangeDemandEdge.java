@@ -14,7 +14,6 @@ public class ChangeDemandEdge extends DemandEdge{
 	private double cost;
 	private double increPercentage;
 	private double originDemand;
-	@Ignore
 	private boolean lock;
     
     public ChangeDemandEdge(int origin, int dest, double demand){

@@ -8,6 +8,7 @@ import org.lab1505.ue.entity.DemandEdge;
 import org.lab1505.ue.entity.LinkEdge;
 import org.lab1505.ue.entity.UeLinkEdge;
 import org.lab1505.ue.fileutil.CsvGraphWriter;
+import org.lab1505.ue.fileutil.FileDirectoryGenerator;
 import org.lab1505.ue.fileutil.TntpReader;
 
 public class UserEquilibriumTest{
@@ -21,7 +22,7 @@ public class UserEquilibriumTest{
         UserEquilibrium<Integer,DemandEdge,UeLinkEdge> ueq = new UserEquilibrium<>(net, trips);
         ueq.assign(5);
         System.out.println(ueq.getDiffList());
-        CsvGraphWriter.writeTo(net, UeLinkEdge.class, "ue.csv");
+        CsvGraphWriter.writeTo(net, UeLinkEdge.class, FileDirectoryGenerator.createDefaultFile("ue.csv"));
     }
 
 }

@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.lab1505.ue.entity.DemandEdge;
 import org.lab1505.ue.entity.LinkEdge;
 import org.lab1505.ue.fileutil.CsvGraphWriter;
+import org.lab1505.ue.fileutil.FileDirectoryGenerator;
 import org.lab1505.ue.fileutil.TntpReader;
 
 public class CsvGraphWriterTest {
@@ -17,13 +18,13 @@ public class CsvGraphWriterTest {
     public void writeNet(String url){
         SimpleDirectedGraph<Integer,LinkEdge> graph = TntpReader.readNet(url);
 
-        CsvGraphWriter.writeTo(graph, LinkEdge.class, prefix+url+suffix);
+        CsvGraphWriter.writeTo(graph, LinkEdge.class, FileDirectoryGenerator.createFileAutoRename("net", "csv"));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {TntpReader.SIOUXFALLS_TRIP,TntpReader.ANAHEIM_TRIP,TntpReader.WINNIPEG_ASYM_TRIP})
     public void writeTrips(String url){
         SimpleDirectedGraph<Integer,DemandEdge> graph = TntpReader.readTrips(url);
-        CsvGraphWriter.writeTo(graph, DemandEdge.class, prefix+url+suffix);
+        CsvGraphWriter.writeTo(graph, DemandEdge.class, FileDirectoryGenerator.createDefaultFile(prefix+"trips"+suffix));
     }
 }

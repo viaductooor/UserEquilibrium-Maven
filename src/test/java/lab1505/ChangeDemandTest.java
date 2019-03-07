@@ -21,7 +21,7 @@ public class ChangeDemandTest {
         trips = TntpReader.readTrips(TntpReader.SIOUXFALLS_TRIP);
         
         ChangeDemand cd = new ChangeDemand(net,trips);
-        cd.changeDemand(0.01, 50);
+        cd.changeDemand(0.01, 10);
         // CsvGraphWriter.writeTo(cd.getTripsGraph(), ChangeDemandEdge.class, "changedemand.csv");
         // CsvGraphWriter.writeTo(cd.getNetGraph(), UeLinkEdge.class, "ue.csv");
         
