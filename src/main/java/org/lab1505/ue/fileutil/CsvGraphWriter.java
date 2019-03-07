@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +39,18 @@ public class CsvGraphWriter {
 
         HashMap<String, Integer> keymap = null;
         for (E edge : graph.edgeSet()) {
+            Field[] originalFields = edgeType.getDeclaredFields();
+            ArrayList<Field> fields = new ArrayList<>();
+            for(Field f:originalFields){
+                if (!f.isAccessible()) {
+                    f.setAccessible(true);
+                }
+                Ignore ignore = f.getDeclaredAnnotation(Ignore.class);
+                if(ignore==null){
+                    fields.add(f);
+                }
+            }
+            
             /**
              * write header
              */
@@ -45,10 +58,7 @@ public class CsvGraphWriter {
                 keymap = new HashMap<String, Integer>();
                 int i = 2;
 
-                for (Field f : edgeType.getDeclaredFields()) {
-                    if (!f.isAccessible()) {
-                        f.setAccessible(true);
-                    }
+                for (Field f : fields) {
                     keymap.put(f.getName(), i++);
                 }
 
@@ -72,11 +82,7 @@ public class CsvGraphWriter {
             contentarr[0] = source.toString();
             contentarr[1] = target.toString();
 
-            for (Field f : edgeType.getDeclaredFields()) {
-
-                if (!f.isAccessible()) {
-                    f.setAccessible(true);
-                }
+            for (Field f : fields) {
                 String fieldName = f.getName();
                 String fieldValue = "N/A";
                 try {

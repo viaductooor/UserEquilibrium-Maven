@@ -4,15 +4,17 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.lab1505.ue.exception.SurchargePoolException;
+import org.lab1505.ue.fileutil.Ignore;
 
 public class UeLinkEdge extends LinkEdge implements UeEdge {
     private double volume;
     private double auxVolume;
     private double traveltime;
     private SurchargePool surchargePool;
+    @Ignore
     private static Function<UeLinkEdge, Double> traveltimeFunc;
 
-    public UeLinkEdge(LinkEdge e){
+    public UeLinkEdge(LinkEdge e) {
         super(e.getFrom(), e.getTo(), e.getCapacity(), e.getLength(), e.getFtime(), e.getB(), e.getPower(),
                 e.getSpeed(), e.getToll(), e.getType());
         try {
@@ -33,19 +35,46 @@ public class UeLinkEdge extends LinkEdge implements UeEdge {
         return new UeLinkEdge(e);
     }
 
-    public double getRecentSurcharge(){
+    /**
+     * Get first surcharge of the surchargePool.
+     * 
+     * @see SurchargePool#getRecentSurcharge()
+     */
+    public double getRecentSurcharge() {
         return surchargePool.getRecentSurcharge();
     }
 
-    public double getLastSurcharge(){
+    /**
+     * Get the second surcharge of surchargePool if its size > 1, otherwise get the
+     * first one.
+     * 
+     * @return last surcharge
+     * 
+     * @see SurchargePool#getLastSurcharge()
+     */
+    public double getLastSurcharge() {
         return surchargePool.getLastSurcharge();
     }
 
-    public void updateSurcharge(double sur){
+    /**
+     * Add a new surcharge to the head of surchargePool.
+     * 
+     * @param sur surcharge to add
+     * 
+     * @see SurchargePool#add(double)
+     */
+    public void updateSurcharge(double sur) {
         surchargePool.add(sur);
     }
 
-    public double getSurchargeDiff(){
+    /**
+     * Get the difference between recentSurcharge and lastSurcharge.
+     * 
+     * @return abs(firstSurcharge-lastSurcharge)
+     * 
+     * @see SurchargePool#getSurchargeDiff()
+     */
+    public double getSurchargeDiff() {
         return surchargePool.getSurchargeDiff();
     }
 
@@ -79,7 +108,7 @@ public class UeLinkEdge extends LinkEdge implements UeEdge {
         traveltime = traveltimeFunc.apply(this) + getRecentSurcharge();
     }
 
-    public void updateTraveltimeWithoutSurcharge(){
+    public void updateTraveltimeWithoutSurcharge() {
         traveltime = traveltimeFunc.apply(this) - getRecentSurcharge();
     }
 
@@ -87,7 +116,7 @@ public class UeLinkEdge extends LinkEdge implements UeEdge {
     public double getTraveltimeIntegral(double alpha) {
         double upper = volume + alpha * (auxVolume - volume);
         double surcharge = getRecentSurcharge();
-        double C =  (0.03 * getFtime()) / Math.pow(getCapacity(), 4);
+        double C = (0.03 * getFtime()) / Math.pow(getCapacity(), 4);
         double result = C * Math.pow(upper, 5) + (getFtime() + surcharge) * upper;
         return result;
     }
@@ -95,7 +124,7 @@ public class UeLinkEdge extends LinkEdge implements UeEdge {
     /**
      * Set volume and auxVolume to 0 and update traveltime.
      */
-    public void resetVolumeAndTraveltime(){
+    public void resetVolumeAndTraveltime() {
         volume = 0;
         auxVolume = 0;
         updateTraveltime();
@@ -114,6 +143,5 @@ public class UeLinkEdge extends LinkEdge implements UeEdge {
             return ((Math.pow(volume / capacity, 4)) * 0.15 + 1) * fftt;
         };
     }
-
 
 }

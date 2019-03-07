@@ -1,5 +1,7 @@
 package org.lab1505.ue.entity;
 
+import org.lab1505.ue.fileutil.Ignore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +14,8 @@ public class ChangeDemandEdge extends DemandEdge{
 	private double cost;
 	private double increPercentage;
 	private double originDemand;
-    private boolean lock;
+	@Ignore
+	private boolean lock;
     
     public ChangeDemandEdge(int origin, int dest, double demand){
         super(demand);

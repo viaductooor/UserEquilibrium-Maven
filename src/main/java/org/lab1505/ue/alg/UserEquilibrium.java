@@ -14,13 +14,14 @@ import org.lab1505.ue.entity.UeEdge;
 import org.lab1505.ue.entity.UeLinkEdge;
 
 /**
- * Refer to User Equilibrium Assignment in Sheffi's Urban Transportation Network.
+ * Refer to User Equilibrium Assignment in Sheffi's Urban Transportation
+ * Network.
  * 
  * @param <T> type of vertex
  * @param <E> type of demand edge
  * @param <D> type of net edge
  */
-public class UserEquilibrium<T,E extends DemandEdge,D extends UeEdge> {
+public class UserEquilibrium<T, E extends DemandEdge, D extends UeEdge> {
 	private SimpleDirectedWeightedGraph<T, D> mNet;
 	private SimpleDirectedGraph<T, E> mTrips;
 	private LinkedList<Double> diffChangeList;
@@ -29,6 +30,17 @@ public class UserEquilibrium<T,E extends DemandEdge,D extends UeEdge> {
 		mNet = net;
 		mTrips = trips;
 		diffChangeList = new LinkedList<Double>();
+	}
+
+	/**
+	 * Before performing the assignment, each UeEdge's volume and auxVolume should
+	 * be cleared.
+	 */
+	public void init() {
+		for (D edge : mNet.edgeSet()) {
+			edge.setVolume(0);
+			edge.setAuxVolume(0);
+		}
 	}
 
 	/**
@@ -41,7 +53,7 @@ public class UserEquilibrium<T,E extends DemandEdge,D extends UeEdge> {
 	 * @param links
 	 * @param trips
 	 */
-	private  void allOrNothing() {
+	private void allOrNothing() {
 
 		DijkstraShortestPath<T, D> dsp = new DijkstraShortestPath<>(mNet);
 		clearAuxVolume();
@@ -183,6 +195,11 @@ public class UserEquilibrium<T,E extends DemandEdge,D extends UeEdge> {
 		return newGraph;
 	}
 
+	/**
+	 * Get total travel time of mNet.
+	 * 
+	 * @return total travel time
+	 */
 	public double getTotalTravelTime() {
 		float sum = 0;
 		Set<D> edges = mNet.edgeSet();
@@ -192,19 +209,19 @@ public class UserEquilibrium<T,E extends DemandEdge,D extends UeEdge> {
 		return sum;
 	}
 
-	public LinkedList<Double> getDiffList(){
+	public LinkedList<Double> getDiffList() {
 		return this.diffChangeList;
 	}
 
 	/**
+	 * Perform User Equilibrium assignment based on existing trips and net.
 	 * 
-	 * @param graph
-	 * @param trips
-	 * @param targetDiff
-	 * @return
+	 * @param targetDiff differece of surcharge between the recent operation and
+	 *                   last operation, which is also a critical convergence criteria
 	 */
 	public void assign(double targetDiff) {
 
+		init();
 		// step 0
 		allOrNothing();
 		y2x();
