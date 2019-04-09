@@ -17,7 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * TntpReader is a class in charge of reading tntp files (see
+ * TntpReader is a class which can read tntp files (see
  * https://github.com/bstabler/TransportationNetworks) and transform them into
  * SimpleDirectedGraph.
  * 

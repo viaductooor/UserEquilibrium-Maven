@@ -1,7 +1,5 @@
 package org.lab1505.ue.entity;
 
-import org.lab1505.ue.fileutil.Ignore;
-
 import lombok.Getter;
 import lombok.Setter;
 

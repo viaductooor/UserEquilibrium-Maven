@@ -17,11 +17,7 @@ public class UeLinkEdge extends LinkEdge implements UeEdge {
     public UeLinkEdge(LinkEdge e) {
         super(e.getFrom(), e.getTo(), e.getCapacity(), e.getLength(), e.getFtime(), e.getB(), e.getPower(),
                 e.getSpeed(), e.getToll(), e.getType());
-        try {
-            this.surchargePool = new SurchargePool();
-        } catch (SurchargePoolException ex) {
-            ex.printStackTrace();
-        }
+        this.surchargePool = new SurchargePool();
         traveltimeFunc = createBprTraveltimeFunction();
         resetVolumeAndTraveltime();
     }
@@ -76,6 +72,23 @@ public class UeLinkEdge extends LinkEdge implements UeEdge {
      */
     public double getSurchargeDiff() {
         return surchargePool.getSurchargeDiff();
+    }
+
+    public void setSurchargeRate(double rate) {
+        surchargePool.setSurchargeRate(rate);
+    }
+
+    public double getSurchargeRate() {
+        return surchargePool.getSurchargeRate();
+    }
+
+    /**
+     * Increase surchargeRate by a specific percentage.
+     * 
+     * @param value the percentage
+     */
+    public void increaseSurchargeRateBy(double value) {
+        setSurchargeRate(getSurchargeRate() + value);
     }
 
     @Override

@@ -126,27 +126,26 @@ public final class ChangeDemand {
             ue.assign(uediff);
             loadAndChangeDemandIncrementally(demandStep);
             updateDemandBasedOnPercentage();
-            updataMarginalCostAndSurcharge(++ nSurchargeloop);
+            updataMarginalCostAndSurcharge(++nSurchargeloop);
             writeTripsAndNet("trips", "net");
 
             {
                 ue.assign(uediff);
-                int numUnqualified = 0;
-                for(UeLinkEdge edge:mNet.edgeSet()){
-                    if(edge.getVolume()>edge.getCapacity()){
-                        edge.updateSurcharge(edge.getRecentSurcharge()*(1.05));
-                        numUnqualified ++;
+                for (UeLinkEdge edge : mNet.edgeSet()) {
+                    if (edge.getVolume() > edge.getCapacity()) {
+                        edge.increaseSurchargeRateBy(0.05);
                     }
                 }
-                if(numUnqualified == 0) return;
             }
 
             recentDiff = getSuchargeDiff();
-        } while (nSurchargeloop<10);
+            System.out.println(recentDiff);
+        } while (nSurchargeloop < 100);
     }
 
     /**
-     * Incrementally load demand until all demand-edges' cost greater than their original cost.
+     * Incrementally load demand until all demand-edges' cost greater than their
+     * original cost.
      * 
      * @param demandStep how much to load each time
      */
@@ -157,14 +156,14 @@ public final class ChangeDemand {
         HashMap<Integer, SingleSourcePaths<Integer, UeLinkEdge>> paths;
         paths = getUpdatedShortestPaths();
         do {
-            nLoadLoop ++;
+            nLoadLoop++;
             for (ChangeDemandEdge edge : mTrips.edgeSet()) {
                 if (edge.isLock() == false) {
                     if (edge.getCost() > edge.getOriginCost() || edge.getIncrePercentage() >= 10) {
                         edge.setLock(true);
                         lockcount++;
                     } else {
-                        load(demandStep, edge, paths); //Affects volume, traveltime and weight
+                        load(demandStep, edge, paths); // Affects volume, traveltime and weight
                     }
                 }
             }
@@ -175,7 +174,7 @@ public final class ChangeDemand {
             }
 
         } while (lockcount < mTrips.edgeSet().size());
-        System.out.println("nLoadLoop:"+nLoadLoop);
+        System.out.println("nLoadLoop:" + nLoadLoop);
     }
 
     /**
@@ -192,7 +191,7 @@ public final class ChangeDemand {
      * 
      * @return paths
      */
-    public HashMap<Integer,SingleSourcePaths<Integer,UeLinkEdge>> getUpdatedShortestPaths(){
+    public HashMap<Integer, SingleSourcePaths<Integer, UeLinkEdge>> getUpdatedShortestPaths() {
         HashMap<Integer, SingleSourcePaths<Integer, UeLinkEdge>> paths = new HashMap<>();
         for (ChangeDemandEdge edge : mTrips.edgeSet()) {
             int o = edge.getOrigin();
@@ -205,9 +204,9 @@ public final class ChangeDemand {
      * Output the trips and the net.
      * 
      * @param tripsFilename filename of the trips
-     * @param netFilename filename of the net
+     * @param netFilename   filename of the net
      */
-    private void writeTripsAndNet(String tripsFilename,String netFilename) {
+    private void writeTripsAndNet(String tripsFilename, String netFilename) {
         CsvGraphWriter.writeTo(mTrips, ChangeDemandEdge.class,
                 FileDirectoryGenerator.createFileAutoRename(tripsFilename, "csv"));
         CsvGraphWriter.writeTo(mNet, UeLinkEdge.class, FileDirectoryGenerator.createFileAutoRename(netFilename, "csv"));
@@ -284,8 +283,8 @@ public final class ChangeDemand {
     }
 
     /**
-     * Get the trip's shortest path weight according to paths, and
-     * pass it to {@link ChangeDemandEdge#setCost(double)}.
+     * Get the trip's shortest path weight according to paths, and pass it to
+     * {@link ChangeDemandEdge#setCost(double)}.
      * 
      * @param edge
      */

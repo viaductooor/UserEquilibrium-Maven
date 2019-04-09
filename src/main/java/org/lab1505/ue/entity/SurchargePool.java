@@ -14,6 +14,7 @@ public class SurchargePool {
      * Basic list that restores surcharges.
      */
     private LinkedList<Double> pool;
+    private double surchargeRate;
 
     /**
      * Create a surcharge of a specific size.
@@ -29,16 +30,18 @@ public class SurchargePool {
         for (int i = 0; i < size; i++) {
             pool.add(0.0);
         }
+        surchargeRate = 0;
     }
 
     /**
      * Create a surchargePool whose size is 2 by default.
      * 
-     * @throws SurchargePoolException
      */
-    public SurchargePool() throws SurchargePoolException {
-            this(2);
-        
+    public SurchargePool(){
+        this.pool = new LinkedList<Double>();
+        pool.add(0.0);
+        pool.add(0.0);
+        surchargeRate = 0;
     }
 
     /**
@@ -48,7 +51,7 @@ public class SurchargePool {
      */
     public void add(double surcharge) {
         pool.removeLast();
-        pool.addFirst(surcharge);
+        pool.addFirst(surcharge*(1+surchargeRate));
     }
 
     /**
@@ -93,6 +96,14 @@ public class SurchargePool {
 
     @Override
     public String toString(){
-        return pool.toString();
+        return pool.toString()+","+surchargeRate;
+    }
+
+    public void setSurchargeRate(double rate){
+        this.surchargeRate = rate;
+    }
+
+    public double getSurchargeRate(){
+        return surchargeRate;
     }
 }
