@@ -26,6 +26,6 @@ public class Algorithm6Test {
 
     @Test
     public void total(){
-        Algorithm6.run();
+        Algorithm6.run(Algorithm6.NET_URL,Algorithm6.TRIP_URL);
     }
 }

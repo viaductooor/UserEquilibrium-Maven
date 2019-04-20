@@ -15,6 +15,7 @@ public class NetEdge {
     double initialTraveltime;
     double traveltime;
     double length;
+    int numLanes;
     SurchargePool surchargePool;
 
     public NetEdge(double length, double initialTraveltime, double othervolume) {
@@ -24,6 +25,7 @@ public class NetEdge {
         this.traveltime = initialTraveltime;
         this.surchargePool = new SurchargePool();
         this.length = length;
+        this.numLanes = 1;
     }
 
     public static SimpleDirectedWeightedGraph<String, NetEdge> readGraphFromFiles(String ovurl, String iturl,
