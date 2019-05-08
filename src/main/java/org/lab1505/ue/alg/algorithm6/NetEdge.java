@@ -42,12 +42,12 @@ public class NetEdge {
         while ((line = csvReader.readNext()) != null) {
             String initNode = line[0];
             String endNode = line[1];
-            try{
+            try {
                 double otherVolume = Double.parseDouble(line[2]);
                 graph.addVertex(initNode);
                 graph.addVertex(endNode);
                 graph.addEdge(initNode, endNode, new NetEdge(-1, -1, otherVolume));
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
         }
@@ -61,14 +61,14 @@ public class NetEdge {
         while ((line = csvReader.readNext()) != null) {
             String initNode = line[0];
             String endNode = line[1];
-            try{
+            try {
                 double initialTraveltime = Double.parseDouble(line[2]);
                 if (graph.containsEdge(initNode, endNode)) {
                     NetEdge e = graph.getEdge(initNode, endNode);
                     e.initialTraveltime = initialTraveltime;
                     e.traveltime = initialTraveltime;
                 }
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
 
@@ -83,13 +83,13 @@ public class NetEdge {
         while ((line = csvReader.readNext()) != null) {
             String initNode = line[0];
             String endNode = line[1];
-            try{
+            try {
                 double length = Double.parseDouble(line[2]);
                 if (graph.containsEdge(initNode, endNode)) {
                     NetEdge e = graph.getEdge(initNode, endNode);
                     e.length = length;
                 }
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
 

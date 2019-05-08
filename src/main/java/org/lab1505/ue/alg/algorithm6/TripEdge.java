@@ -4,10 +4,10 @@ import org.lab1505.ue.fileutil.Ignore;
 
 public class TripEdge{
     @Ignore
-    String init;
+    public String init;
     @Ignore
-    String end;
-    double leastCost;
+    public String end;
+    public double leastCost;
     public TripEdge(String init,String end){
         this.init = init;
         this.end = end;
