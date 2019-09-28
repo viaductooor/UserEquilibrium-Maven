@@ -21,12 +21,12 @@ public class CsvGraphWriter {
     /**
      * Write a {@link Graph} to a local file. The method utilizes every field of
      * edgeType.
-     * 
+     *
      * @param <V>      type of vertex
      * @param <E>      type of edge
      * @param graph    the graph to write
      * @param edgeType Type of edge, should be the same with E
-     * @param url      the local file directory to write the graph
+     * @param file      the local file directory to write the graph
      */
     public static <V, E> void writeTo(Graph<V, E> graph, Class<? extends E> edgeType, File file) {
 

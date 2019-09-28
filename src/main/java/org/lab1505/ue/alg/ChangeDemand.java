@@ -55,7 +55,7 @@ public final class ChangeDemand {
 
     /**
      * compute marginal cost based volume, freeFlowTime and Capacity
-     * 
+     *
      * @param volume
      * @param fftt
      * @param cap
@@ -66,24 +66,11 @@ public final class ChangeDemand {
         return result;
     }
 
-    /**
-     * compute surcharge based on marginalCost and last surcharge
-     * 
-     * @param n
-     * @param marginalCost
-     * @param lastSurcharge
-     * @return
-     */
     public double computeSurcharge(int n, double marginalCost, double lastSurcharge) {
         double result = (1f / n) * marginalCost + (1 - (1f / n)) * lastSurcharge;
         return result;
     }
 
-    /**
-     * 
-     * @param list
-     * @return
-     */
     private double getSuchargeDiff() {
         double sum = 0;
         for (UeLinkEdge edge : mNet.edgeSet()) {
@@ -94,16 +81,16 @@ public final class ChangeDemand {
 
     /**
      * Load method affects volume, traveltime and weight.
-     * 
+     *
      * @param n       pecentage by which to add on the demand edge
      * @param demande the demand edge to load
      */
     private void load(double n, ChangeDemandEdge demande,
             HashMap<Integer, SingleSourcePaths<Integer, UeLinkEdge>> paths) {
         double demand = demande.getOriginDemand();
-        double per = demande.getIncrePercentage();
+        double per = demande.getIncrementPercentage();
         per = per + n;
-        demande.setIncrePercentage(per);
+        demande.setIncrementPercentage(per);
         int origin = mTrips.getEdgeSource(demande);
         int des = mTrips.getEdgeTarget(demande);
         GraphPath<Integer, UeLinkEdge> path = paths.get(origin).getPath(des);
@@ -146,7 +133,7 @@ public final class ChangeDemand {
     /**
      * Incrementally load demand until all demand-edges' cost greater than their
      * original cost.
-     * 
+     *
      * @param demandStep how much to load each time
      */
     private void loadAndChangeDemandIncrementally(double demandStep) {
@@ -159,7 +146,7 @@ public final class ChangeDemand {
             nLoadLoop++;
             for (ChangeDemandEdge edge : mTrips.edgeSet()) {
                 if (edge.isLock() == false) {
-                    if (edge.getCost() > edge.getOriginCost() || edge.getIncrePercentage() >= 10) {
+                    if (edge.getCost() > edge.getOriginCost() || edge.getIncrementPercentage() >= 10) {
                         edge.setLock(true);
                         lockcount++;
                     } else {
@@ -182,13 +169,13 @@ public final class ChangeDemand {
      */
     public void clearPercentage() {
         for (ChangeDemandEdge edge : mTrips.edgeSet()) {
-            edge.setIncrePercentage(0.0);
+            edge.setIncrementPercentage(0.0);
         }
     }
 
     /**
      * Get shortest paths based on recent mNet.
-     * 
+     *
      * @return paths
      */
     public HashMap<Integer, SingleSourcePaths<Integer, UeLinkEdge>> getUpdatedShortestPaths() {
@@ -202,7 +189,7 @@ public final class ChangeDemand {
 
     /**
      * Output the trips and the net.
-     * 
+     *
      * @param tripsFilename filename of the trips
      * @param netFilename   filename of the net
      */
@@ -240,7 +227,7 @@ public final class ChangeDemand {
     private void resetTrips() {
         for (ChangeDemandEdge edge : mTrips.edgeSet()) {
             edge.setDemand(edge.getOriginDemand());
-            edge.setIncrePercentage(0.0);
+            edge.setIncrementPercentage(0.0);
             edge.setCost(0);
             edge.setLock(false);
         }
@@ -259,7 +246,7 @@ public final class ChangeDemand {
 
     /**
      * update marginal cost and link surcharge
-     * 
+     *
      * @param n iteration number
      */
     private void updataMarginalCostAndSurcharge(int n) {
@@ -277,7 +264,7 @@ public final class ChangeDemand {
     private void updateDemandBasedOnPercentage() {
         for (ChangeDemandEdge edge : mTrips.edgeSet()) {
             double demand = edge.getDemand();
-            double percentage = edge.getIncrePercentage();
+            double percentage = edge.getIncrementPercentage();
             edge.setDemand(demand * percentage);
         }
     }
@@ -285,7 +272,7 @@ public final class ChangeDemand {
     /**
      * Get the trip's shortest path weight according to paths, and pass it to
      * {@link ChangeDemandEdge#setCost(double)}.
-     * 
+     *
      * @param edge
      */
     public void updateCost(ChangeDemandEdge edge, HashMap<Integer, SingleSourcePaths<Integer, UeLinkEdge>> paths) {
@@ -308,7 +295,7 @@ public final class ChangeDemand {
     /**
      * Update an edge's weight according to its own
      * {@link UeLinkEdge#getTraveltime()}
-     * 
+     *
      * @param edge the edge to update weight
      */
     public void updateWeight(UeLinkEdge edge) {

@@ -13,14 +13,12 @@ import org.jgrapht.graph.SimpleDirectedGraph;
 import org.lab1505.ue.entity.DemandEdge;
 import org.lab1505.ue.entity.LinkEdge;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 /**
  * TntpReader is a class which can read tntp files (see
  * https://github.com/bstabler/TransportationNetworks) and transform them into
  * SimpleDirectedGraph.
- * 
+ *
  */
 public class TntpReader {
 
@@ -35,7 +33,7 @@ public class TntpReader {
 
 	/**
 	 * Read the tntp net from a file which is usually named by REGIONNAME_net.tntp.
-	 * 
+	 *
 	 * @param url the relative file location
 	 * @return net graph
 	 */
@@ -91,7 +89,7 @@ public class TntpReader {
 
 	/**
 	 * Read the tntp trips from a file which is usually named by REGIONNAME_trips.tntp.
-	 * 
+	 *
 	 * @param url the relative file location
 	 */
 	public static SimpleDirectedGraph<Integer, DemandEdge> readTrips(String url) {
@@ -149,18 +147,74 @@ public class TntpReader {
 	}
 }
 
-@Data
-@AllArgsConstructor
 class TripsInfo {
 	private int numberOfZones;
 	private double totalVolume;
+
+    public TripsInfo(int numberOfZones, double totalVolume) {
+        this.numberOfZones = numberOfZones;
+        this.totalVolume = totalVolume;
+    }
+
+    public int getNumberOfZones() {
+        return numberOfZones;
+    }
+
+    public void setNumberOfZones(int numberOfZones) {
+        this.numberOfZones = numberOfZones;
+    }
+
+    public double getTotalVolume() {
+        return totalVolume;
+    }
+
+    public void setTotalVolume(double totalVolume) {
+        this.totalVolume = totalVolume;
+    }
 }
 
-@Data
-@AllArgsConstructor
 class NetInfo {
 	private int numberOfZones;
 	private int numberOfNodes;
 	private int firstThruNode;
 	private int numberOfLinks;
+
+    public NetInfo(int numberOfZones, int numberOfNodes, int firstThruNode, int numberOfLinks) {
+        this.numberOfZones = numberOfZones;
+        this.numberOfNodes = numberOfNodes;
+        this.firstThruNode = firstThruNode;
+        this.numberOfLinks = numberOfLinks;
+    }
+
+    public int getNumberOfZones() {
+        return numberOfZones;
+    }
+
+    public void setNumberOfZones(int numberOfZones) {
+        this.numberOfZones = numberOfZones;
+    }
+
+    public int getNumberOfNodes() {
+        return numberOfNodes;
+    }
+
+    public void setNumberOfNodes(int numberOfNodes) {
+        this.numberOfNodes = numberOfNodes;
+    }
+
+    public int getFirstThruNode() {
+        return firstThruNode;
+    }
+
+    public void setFirstThruNode(int firstThruNode) {
+        this.firstThruNode = firstThruNode;
+    }
+
+    public int getNumberOfLinks() {
+        return numberOfLinks;
+    }
+
+    public void setNumberOfLinks(int numberOfLinks) {
+        this.numberOfLinks = numberOfLinks;
+    }
 }
