@@ -20,15 +20,29 @@ public class ChangeDemandTest {
 
     @Test
     public void changeDemandChicagoRegional(){
-        SimpleDirectedGraph<Integer,LinkEdge> originalNet = TntpReader.readNet("files/chicago/ChicagoRegional_net.txt");
+        SimpleDirectedGraph<Integer, LinkEdge> originalNet = TntpReader.readNet("files/9.26/Net.txt");
         net = UserEquilibrium.fromLinkEdgeGraph(originalNet);
-        trips = TntpReader.readTrips("files/chicago/ChicagoSketch_trips.txt");
+        trips = TntpReader.readTrips("files/9.26/ODtrip.txt");
 
-        ChangeDemand cd = new ChangeDemand(net,trips);
-        cd.changeDemand(0.01, 100);
-     CsvGraphWriter.writeTo(cd.getTripsGraph(), ChangeDemandEdge.class, new File("output/changedemand_trips.csv"));
-     CsvGraphWriter.writeTo(cd.getNetGraph(), UeLinkEdge.class, new File("output/changedemand_links.csv"));
+        ChangeDemand cd = new ChangeDemand(net, trips);
+        cd.changeDemand(0.01, 10);
+        CsvGraphWriter.writeTo(cd.getTripsGraph(), ChangeDemandEdge.class, new File("output/changedemand_trips.csv"));
+        CsvGraphWriter.writeTo(cd.getNetGraph(), UeLinkEdge.class, new File("output/changedemand_links.csv"));
 
     }
+
+    @Test
+    public void changeDemand() {
+        SimpleDirectedGraph<Integer, LinkEdge> originalNet = TntpReader.readNet(TntpReader.SIOUXFALLS_NET);
+        net = UserEquilibrium.fromLinkEdgeGraph(originalNet);
+        trips = TntpReader.readTrips(TntpReader.SIOUXFALLS_TRIP);
+
+        ChangeDemand cd = new ChangeDemand(net,trips);
+        cd.changeDemand(0.01, 10);
+        CsvGraphWriter.writeTo(cd.getTripsGraph(), ChangeDemandEdge.class, new File("output/changedemand_trips.csv"));
+        CsvGraphWriter.writeTo(cd.getNetGraph(), UeLinkEdge.class, new File("output/changedemand_links.csv"));
+
+    }
+
 
 }

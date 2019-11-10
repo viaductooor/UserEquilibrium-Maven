@@ -29,3 +29,4 @@ buildNumber.properties
 # Local files and output files
 output/
 files/
+target/

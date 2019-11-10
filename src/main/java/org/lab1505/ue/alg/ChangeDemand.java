@@ -1,7 +1,6 @@
 package org.lab1505.ue.alg;
 
-import java.util.HashMap;
-
+import org.apache.log4j.Logger;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm.SingleSourcePaths;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -13,7 +12,12 @@ import org.lab1505.ue.entity.UeLinkEdge;
 import org.lab1505.ue.fileutil.CsvGraphWriter;
 import org.lab1505.ue.fileutil.FileDirectoryGenerator;
 
+import java.util.HashMap;
+
 public final class ChangeDemand {
+
+    private static Logger logger = Logger.getLogger(ChangeDemand.class.getName());
+
     private double uediff = 50;
     private int lockcount = 0;
     private SimpleDirectedWeightedGraph<Integer, UeLinkEdge> mNet;
@@ -62,7 +66,7 @@ public final class ChangeDemand {
      * @return
      */
     private double getMarginalCost(double volume, double fftt, double cap) {
-        double result = (double) (volume * fftt * (4 * Math.pow(volume, 3) * 0.15 / Math.pow(cap, 4)));
+        double result = volume * fftt * (4 * Math.pow(volume, 3) * 0.15 / Math.pow(cap, 4));
         return result;
     }
 
@@ -99,6 +103,29 @@ public final class ChangeDemand {
             edge.updateTraveltime();
             updateWeight(edge);
         }
+    }
+
+    /**
+     * main method of this class
+     */
+    public void changeDemand(double demandStep, int maxLoop) {
+        init();
+        int nSurchargeloop = 0;
+
+        do {
+            ue.assign(uediff);
+            loadAndChangeDemandIncrementally(demandStep);
+            updateDemandBasedOnPercentage();
+            updataMarginalCostAndSurcharge(++nSurchargeloop);
+            {
+                ue.assign(uediff);
+                for (UeLinkEdge edge : mNet.edgeSet()) {
+                    if (edge.getVolume() > edge.getCapacity()) {
+                        edge.increaseSurchargeRateBy(0.05);
+                    }
+                }
+            }
+        } while (nSurchargeloop < maxLoop);
     }
 
     /**
@@ -161,7 +188,7 @@ public final class ChangeDemand {
             }
 
         } while (lockcount < mTrips.edgeSet().size());
-        System.out.println("nLoadLoop:" + nLoadLoop);
+        logger.info("nLoadLoop:" + nLoadLoop);
     }
 
     /**

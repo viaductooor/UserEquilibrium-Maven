@@ -1,41 +1,25 @@
 package org.lab1505.ue.fileutil;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import com.opencsv.CSVWriter;
+import org.apache.commons.lang3.ArrayUtils;
+import org.jgrapht.Graph;
+
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.opencsv.CSVWriter;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.jgrapht.Graph;
 
 /**
  * CsvGraphWriter is a class that can write any object of {@link Graph} into a
  * local csv file.
  */
 public class CsvGraphWriter {
-    /**
-     * Write a {@link Graph} to a local file. The method utilizes every field of
-     * edgeType.
-     *
-     * @param <V>      type of vertex
-     * @param <E>      type of edge
-     * @param graph    the graph to write
-     * @param edgeType Type of edge, should be the same with E
-     * @param file      the local file directory to write the graph
-     */
-    public static <V, E> void writeTo(Graph<V, E> graph, Class<? extends E> edgeType, File file) {
+
+    public static <V, E> void writeTo(Graph<V, E> graph, Class<? extends E> edgeType, OutputStream outputStream) {
 
         CSVWriter writer = null;
-        try {
-            writer = new CSVWriter(new FileWriter(file));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        writer = new CSVWriter(new OutputStreamWriter(outputStream));
 
         HashMap<String, Integer> keymap = null;
         for (E edge : graph.edgeSet()) {
@@ -103,6 +87,25 @@ public class CsvGraphWriter {
 
         try {
             writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Write a {@link Graph} to a local file. The method utilizes every field of
+     * edgeType.
+     *
+     * @param <V>      type of vertex
+     * @param <E>      type of edge
+     * @param graph    the graph to write
+     * @param edgeType Type of edge, should be the same with E
+     * @param file     the local file directory to write the graph
+     */
+    public static <V, E> void writeTo(Graph<V, E> graph, Class<? extends E> edgeType, File file) {
+
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            writeTo(graph, edgeType, fos);
         } catch (IOException e) {
             e.printStackTrace();
         }

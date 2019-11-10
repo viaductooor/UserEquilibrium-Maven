@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+
+    <link crossorigin="anonymous" href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css"
+          rel="stylesheet">
+    <script crossorigin="anonymous" src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <title>应急路线查询</title>
+</head>
+<body>
+<div class="container">
+    <div class="card" style="width:36rem;margin:auto;margin-top:10rem;">
+        <nav class="nav">
+            <a class="nav-link active" href="/ue">用户均衡</a>
+            <a class="nav-link active" href="/changedemand">需求调整</a>
+            <a class="nav-link active" href="/resolvetrips">出租车行程提取</a>
+            <a class="nav-link active" href="/vulnerability">弱点检测</a>
+            <a aria-disabled="true" class="nav-link disabled" href="/emergency">应急路线计算</a>
+        </nav>
+        <div class="input-group">
+            <label for="gpsFiles">选择当前出租车GPS数据文件：</label>
+            <input id="gpsFiles" multiple type="file">
+        </div>
+        <div>
+            <label>选择edge文件：</label>
+            <input id="edgeFile" type="file">
+        </div>
+        <div>
+            <label>选择node文件：</label>
+            <input id="nodeFile" type="file">
+        </div>
+        <div>
+            <label>选择应急站点station文件：</label>
+            <input id="stationFile" type="file">
+        </div>
+        <div>
+            <label>选择应急站点类型:</label>
+            <input checked id="fireStation" name="stationType" type="radio" value="fire">
+            <label for="fireStation">消防站</label>
+            <input id="hospital" name="stationType" type="radio" value="hospital">
+            <label for="hospital">医院</label>
+            <input id="police" name="stationType" type="radio" value="police">
+            <label for="police">警察局</label>
+        </div>
+        <div class="input-group">
+            <label for="targetNodeId">目标事故节点编号：</label>
+            <input id="targetNodeId" type="text" value="2679">
+        </div>
+        <button class="btn btn-primary" id="confirm">运行</button>
+    </div>
+</div>
+<script language="JavaScript" type="text/javascript">
+    // Function to download data to a file
+    function download(data, filename, type) {
+        var file = new Blob([data], {type: type});
+        if (window.navigator.msSaveOrOpenBlob) // IE10+
+            window.navigator.msSaveOrOpenBlob(file, filename);
+        else { // Others
+            var a = document.createElement("a"),
+                    url = URL.createObjectURL(file);
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+        }
+    }
+
+
+    $("#confirm").click(function(e){
+        if(!($("#edgeFile").val()&&$("#nodeFile").val()&&$("#stationFile").val()&&$("#gpsFiles").val())){
+            alert("请选择文件！");
+        }else{
+            $("#confirm").attr("disabled",true);
+            $("#confirm").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\">");
+
+            var formData = new FormData();
+            formData.append("edgeFile",$("#edgeFile")[0].files[0]);
+            formData.append("nodeFile",$("#nodeFile")[0].files[0]);
+            formData.append("stationFile",$("#stationFile")[0].files[0]);
+            formData.append("stationType",$("input[name=stationType]:checked").val());
+            formData.append("targetNodeId",$("#targetNodeId").val());
+
+            var gpsFiles = $("#gpsFiles")[0].files;
+            for(var i=0;i<gpsFiles.length;i++){
+                formData.append("gpsFiles[]",gpsFiles[i]);
+            }
+
+            for (var pair of formData.entries()) {
+                console.log(pair[0]+ ', ' + pair[1]);
+            }
+
+            $.ajax({
+                url: "emergency/quicksearch",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache:false,
+                success: function(res){
+                    alert(res.body);
+                    $("#confirm").attr("disabled",false);
+                    $("#confirm").html("运行");
+                },
+                error: function(res){
+                    alert("Error during ajax request!"+JSON.stringify(res));
+                    $("#confirm").attr("disabled",false);
+                    $("#confirm").html("运行");
+                }
+            });
+        }
+    });
+
+
+</script>
+</body>
+</html>

@@ -6,7 +6,6 @@ public class CodeMsg {
 
     public static CodeMsg SUCCESS = new CodeMsg(1,"success");
     public static CodeMsg ERROR = new CodeMsg(-1,"error");
-    public static CodeMsg TEST = new CodeMsg(0,"test");
 
     private CodeMsg(int code, String msg) {
         this.code = code;

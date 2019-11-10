@@ -1,16 +1,15 @@
 package org.lab1505.ue.web.domain;
 
 public class User {
-    private String id;
+    private String username;
     private String password;
-    private int character;
 
     public String getId() {
-        return id;
+        return username;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setId(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -19,13 +18,5 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public int getCharacter() {
-        return character;
-    }
-
-    public void setCharacter(int character) {
-        this.character = character;
     }
 }

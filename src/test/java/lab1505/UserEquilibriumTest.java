@@ -24,5 +24,4 @@ public class UserEquilibriumTest{
         System.out.println(ueq.getDiffList());
         CsvGraphWriter.writeTo(net, UeLinkEdge.class, FileDirectoryGenerator.createDefaultFile("ue.csv"));
     }
-
 }

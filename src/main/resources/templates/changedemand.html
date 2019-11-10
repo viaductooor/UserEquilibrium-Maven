@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+
+    <link crossorigin="anonymous" href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css"
+          rel="stylesheet">
+    <script crossorigin="anonymous" src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <title>需求调整</title>
+</head>
+<body>
+<div class="container">
+    <div class="card" style="width:36rem;margin:auto;margin-top:10rem;">
+        <nav class="nav">
+            <a class="nav-link active" href="/ue">用户均衡</a>
+            <a aria-disabled="true" class="nav-link disabled" href="/changedemand">需求调整</a>
+            <a class="nav-link active" href="/resolvetrips">出租车行程提取</a>
+            <a class="nav-link active" href="/vulnerability">弱点检测</a>
+            <a class="nav-link active" href="/emergency">应急路线计算</a>
+        </nav>
+
+        <div>
+            <label>选择net文件：</label>
+            <input id="linksFile" type="file">
+        </div>
+        <div>
+            <label>选择trips文件：</label>
+            <input id="tripsFile" type="file">
+        </div>
+        <div>
+            <label>迭代次数n：</label>
+            <input id="iteration" type="text" value="10">
+        </div>
+        <div>
+            <label>需求修改步长step（step∈[0, 1]）:</label>
+            <input id="step" type="text" value="0.1">
+        </div>
+        <button class="btn btn-primary" id="confirm">运行</button>
+    </div>
+</div>
+<script language="JavaScript" type="text/javascript">
+    // Function to download data to a file
+    function download(data, filename, type) {
+        var file = new Blob([data], {type: type});
+        if (window.navigator.msSaveOrOpenBlob) // IE10+
+            window.navigator.msSaveOrOpenBlob(file, filename);
+        else { // Others
+            var a = document.createElement("a"),
+                    url = URL.createObjectURL(file);
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+        }
+    }
+    $("#confirm").click(function(e){
+        if(!($("#linksFile").val()&&$("#tripsFile").val())){
+            alert("请选择文件！")
+        }else{
+            $("#confirm").attr("disabled",true);
+            $("#confirm").html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\">");
+            var formData = new FormData();
+            formData.append("linksFile",$("#linksFile")[0].files[0]);
+            formData.append("tripsFile",$("#tripsFile")[0].files[0]);
+            formData.append("iteration",$("#iteration").val());
+            formData.append("step",$("#step").val());
+            $.ajax({
+                url: "changedemand/run",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(res){
+                    download(res,"result.csv","text/csv");
+                    $("#confirm").attr("disabled",false);
+                    $("#confirm").html("运行");
+                },
+                error: function(res){
+                    alert("error;"+JSON.stringify(res));
+                    $("#confirm").attr("disabled",false);
+                    $("#confirm").html("运行");
+                }
+            });
+        }
+    });
+
+
+</script>
+</body>
+</html>

@@ -5,6 +5,7 @@ public class DemandEdge{
     private double demand;
 
     public DemandEdge(double demand) {
+        this.demand = demand;
     }
 
     public double getDemand() {

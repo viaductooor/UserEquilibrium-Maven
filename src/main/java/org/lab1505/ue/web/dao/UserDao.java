@@ -1,12 +1,19 @@
 package org.lab1505.ue.web.dao;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.lab1505.ue.web.domain.User;
+import org.lab1505.ue.web.domain.DefaultUser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@Mapper
-public interface UserDao {
-    @Select({"SELECT * FROM user WHERE id = #{id}"})
-    User getUserById(@Param("id")String id);
+@Component
+public class UserDao {
+    @Autowired
+    private DefaultUser defaultUser;
+
+    public boolean containUser(String username) {
+        return username.equals(defaultUser.getUsername());
+    }
+
+    public String getPassword(String username) {
+        return defaultUser.getPassword();
+    }
 }

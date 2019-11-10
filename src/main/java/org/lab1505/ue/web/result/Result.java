@@ -1,7 +1,5 @@
 package org.lab1505.ue.web.result;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMsg;
-
 public class Result<T>{
 
     private int code;
@@ -40,9 +38,6 @@ public class Result<T>{
         return body;
     }
 
-    public static <T> Result test(){
-        return new Result(CodeMsg.TEST);
-    }
 
     public static <T> Result error(CodeMsg msg){
         return new Result(CodeMsg.ERROR);
